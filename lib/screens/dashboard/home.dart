@@ -12,23 +12,25 @@ import '../../model/user_model.dart';
 class Home extends StatefulWidget {
   const Home({Key? key, this.userModel}) : super(key: key);
   final UserModel? userModel;
+
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
   List<PostModel> posts = [];
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? stream;
 
-  getData(){
-
-    stream = FirebaseFirestore.instance.collection("posts").snapshots().listen((snapshot) {
+  getData() {
+    stream = FirebaseFirestore.instance
+        .collection("posts")
+        .snapshots()
+        .listen((snapshot) {
       var docs = snapshot.docs;
 
       posts = [];
-      for(var doc in docs){
+      for (var doc in docs) {
         var post = PostModel.fromMap(doc.data());
         posts.add(post);
       }
@@ -42,19 +44,26 @@ class _HomeState extends State<Home> {
     getData();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          showDialog(context: context, builder: (_)=> PostDialog(user: widget.userModel,));
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (_) => PostDialog(
+                    user: widget.userModel,
+                  ));
         },
         child: Icon(Icons.add),
       ),
       body: Container(
         child: ListView.builder(
           itemBuilder: (ctx, i) {
-            return PostWidget(post: posts[i],);
+            return PostWidget(
+              post: posts[i],
+            );
           },
           itemCount: posts.length,
         ),

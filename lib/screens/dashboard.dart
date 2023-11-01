@@ -1,4 +1,6 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/screens/dashboard/events.dart';
 import 'package:firebase/screens/dashboard/home.dart';
 import 'package:firebase/screens/dashboard/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,6 +52,7 @@ class _DashboardState extends State<Dashboard> {
     var items = [
       Home(userModel: userModel,),
       Profile(userModel: userModel,),
+      Events(),
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -64,6 +67,7 @@ class _DashboardState extends State<Dashboard> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.event), label: "Event"),
         ],
       ),
       body: items[selected],
