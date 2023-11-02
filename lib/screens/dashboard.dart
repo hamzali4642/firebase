@@ -17,30 +17,10 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
 
-  UserModel? userModel;
 
-  getData() {
-    var uid = FirebaseAuth.instance.currentUser!.uid;
-    var doc = FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid);
-    doc.snapshots().listen((snapshot) {
-      if (snapshot.exists) {
-
-        setState(() {
-          userModel = UserModel.fromMap(snapshot.data()!);
-        });
-      }else{
-        doc.set({
-          "email" : FirebaseAuth.instance.currentUser?.email,
-        });
-      }
-    });
-  }
 
   @override
   void initState() {
-    getData();
     super.initState();
   }
 
@@ -50,8 +30,8 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     var items = [
-      Home(userModel: userModel,),
-      Profile(userModel: userModel,),
+      Home(),
+      Profile(),
       Events(),
     ];
     return Scaffold(
