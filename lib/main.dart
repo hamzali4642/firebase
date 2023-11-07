@@ -1,11 +1,15 @@
+import 'package:firebase/controllers/home_controller.dart';
 import 'package:firebase/providers/data_provider.dart';
+import 'package:firebase/providers/home_provider.dart';
 import 'package:firebase/screens/dashboard.dart';
 import 'package:firebase/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'controllers/data_controller.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -22,30 +26,102 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => DataProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_)=> DataProvider()),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // TRY THIS: Try running your application with "flutter run". You'll see
-          // the application has a blue toolbar. Then, without quitting the app,
-          // try changing the seedColor in the colorScheme below to Colors.green
-          // and then invoke "hot reload" (save your changes or press the "hot
-          // reload" button in a Flutter-supported IDE, or press "r" if you used
-          // the command line to start the app).
-          //
-          // Notice that the counter didn't reset back to zero; the application
-          // state is not lost during the reload. To reset the state, use hot
-          // restart instead.
-          //
-          // This works for code too, not just values: Most code changes can be
-          // tested with just a hot reload.
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: FirebaseAuth.instance.currentUser == null ? Login() : Dashboard(),
+        home:
+        ChangeNotifierProvider(
+          create: (_)=> HomeProvider(),
+          child: Home(),
+        ),
+      ),
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 3)).then((value) {
+
+      Widget  child = FirebaseAuth.instance.currentUser == null ? Login() : Dashboard();
+
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_)=> child));
+    });
+    super.initState();
+  }
+
+
+  final home = Get.put(HomeController(), tag: "lafj");
+  final data = Get.put(DataController());
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              home.increment();
+            },
+            child: Icon(Icons.add,),
+          ),
+
+          SizedBox(height: 10,),
+          FloatingActionButton(
+            onPressed: () {
+              home.increment2();
+            },
+            child: Icon(Icons.add,),
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Obx(
+              () {
+                print("object1");
+                return Text(
+                  home.counter.value.toString(),
+                  style: TextStyle(
+                    fontSize: 50,
+                  ),
+                );
+              }
+            ),
+
+            Obx(
+               () {
+
+                 print("object2");
+                return Text(
+                  home.counter2.toString(),
+                  style: TextStyle(
+                    fontSize: 50,
+                  ),
+                );
+              }
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -41,7 +41,8 @@ dependencies:
   intl: ^0.18.1
   gap: ^3.0.1
   provider: ^6.0.5
-
+  get: ^4.6.6
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

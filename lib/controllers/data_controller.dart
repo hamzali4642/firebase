@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../model/user_model.dart';
 
-class DataProvider with ChangeNotifier{
-  DataProvider(){
+class DataController extends GetxController{
+
+  DataController(){
 
     print("constructor calling");
     FirebaseAuth.instance.userChanges().listen((user) {
@@ -35,7 +36,7 @@ class DataProvider with ChangeNotifier{
 
 
 
-  UserModel? userModel;
+  Rx<UserModel?> userModel = Rx(null);
 
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? stream;
@@ -47,8 +48,7 @@ class DataProvider with ChangeNotifier{
 
     stream = doc.snapshots().listen((snapshot) {
       if (snapshot.exists) {
-        userModel = UserModel.fromMap(snapshot.data()!);
-        notifyListeners();
+        userModel.value = UserModel.fromMap(snapshot.data()!);
       }else{
         doc.set({
           "email" : FirebaseAuth.instance.currentUser?.email,

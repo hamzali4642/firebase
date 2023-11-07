@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase/controllers/data_controller.dart';
 import 'package:firebase/field_dialog.dart';
 import 'package:firebase/model/user_model.dart';
 import 'package:firebase/providers/data_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -14,12 +16,12 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
 
-  late DataProvider dataProvider;
+  DataController dataProvider = Get.find();
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, value, child) {
-        dataProvider = value;
+
+    return Obx(
+      () {
         return SafeArea(
           child: Container(
             padding: EdgeInsets.all(
@@ -32,7 +34,7 @@ class _ProfileState extends State<Profile> {
                 ClipOval(
                   child: Image(
                     image: NetworkImage(
-                      dataProvider.userModel?.image ??
+                      dataProvider.userModel.value?.image ??
                           "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
                     ),
                     height: 150,
@@ -46,13 +48,13 @@ class _ProfileState extends State<Profile> {
                   child: const Text("Update Image"),
                 ),
                 itemWidget(
-                  dataProvider.userModel?.name ?? "Name",
-                  () {
-                    showDialog(context: context, builder: (_)=> FieldDialog(keyValue: "name", value: dataProvider.userModel?.name,));
+                  dataProvider.userModel.value?.name ?? "Name",
+                      () {
+                    showDialog(context: context, builder: (_)=> FieldDialog(keyValue: "name", value: dataProvider.userModel.value?.name,));
                   },
                 ),
                 itemWidget(
-                  dataProvider.userModel?.email ?? FirebaseAuth.instance.currentUser!.email!,
+                  dataProvider.userModel.value?.email ?? FirebaseAuth.instance.currentUser!.email!,
                   null,
                 ),
               ],

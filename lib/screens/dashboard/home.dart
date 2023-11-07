@@ -50,6 +50,7 @@ class _HomeState extends State<Home> {
   late DataProvider dataProvider;
   @override
   Widget build(BuildContext context) {
+
     return Consumer<DataProvider>(
       builder: (context, value, child) {
         dataProvider = value;
